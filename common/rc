@@ -602,6 +602,10 @@ _test_mkfs()
     ext2|ext3|ext4)
 	$MKFS_PROG -t $FSTYP -- -F $MKFS_OPTIONS $* $TEST_DEV
 	;;
+    zfs)
+	zfs destroy $TEST_DEV || true
+	zfs create -o mountpoint=legacy $TEST_DEV
+	;;
     *)
 	yes | $MKFS_PROG -t $FSTYP -- $MKFS_OPTIONS $* $TEST_DEV
 	;;
@@ -640,6 +644,10 @@ _try_mkfs_dev()
 	;;
     xfs)
 	$MKFS_PROG -t $FSTYP -- -f $MKFS_OPTIONS $*
+	;;
+    zfs)
+	zfs destroy $* || true
+	zfs create -o mountpoint=legacy $*
 	;;
     *)
 	yes | $MKFS_PROG -t $FSTYP -- $MKFS_OPTIONS $*
@@ -740,6 +748,10 @@ _scratch_mkfs()
 	ocfs2)
 		mkfs_cmd="yes | $MKFS_PROG -t $FSTYP --"
 		mkfs_filter="grep -v -e ^mkfs\.ocfs2"
+		;;
+	zfs)
+		mkfs_cmd=""
+		mkfs_filter="cat"
 		;;
 	*)
 		mkfs_cmd="yes | $MKFS_PROG -t $FSTYP --"

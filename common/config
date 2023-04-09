@@ -391,6 +391,9 @@ _common_mount_opts()
 	ubifs)
 		echo $UBIFS_MOUNT_OPTIONS
 		;;
+	zfs)
+		echo $ZFS_MOUNT_OPTIONS
+		;;
 	*)
 		;;
 	esac
@@ -532,6 +535,9 @@ _source_specific_fs()
 	ubifs)
 		[ "$UBIUPDATEVOL_PROG" = "" ] && _fatal "ubiupdatevol not found"
 		;;
+	zfs)
+		# XXX ./common/zfs -- robn, 2023-04-07 
+		;;
 	esac
 }
 
@@ -609,6 +615,11 @@ _check_device()
 		if [ ! -c "$dev" ]; then
 			_fatal "common/config: $name ($dev) is not a character device"
 		fi
+		;;
+	zfs)
+		# zfs mount device is a dataset
+		# XXX check valid dataset, zfs list -Ho name -- robn, 2023-04-07 
+		# XXX create it?
 		;;
 	ceph-fuse)
 		;;
